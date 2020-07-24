@@ -6,7 +6,8 @@ SRCS =  printf.c \
 				ft_memset.c ft_putchar_fd.c \
 				ft_putstr_fd.c ft_strdup.c \
 				ft_strjoin.c ft_strlen.c \
-				ft_strnstr.c \
+				ft_strnstr.c ft_substr.c \
+				ft_strchr.c \
 
 OBJS = $(SRCS:%.c=%.o)
 

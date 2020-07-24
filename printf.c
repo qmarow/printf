@@ -1,40 +1,40 @@
 #include <stdio.h>
 #include <stdarg.h>
-#include "./printf.h"
+#include "printf.h"
 
 double	sum_series(int, ...);
 char	*perevorot(char *str);
 int		ft_printf(const char*, ...);
 
 
-int main(void)
-{
-	 int             a = -4;
-		int             b = 0;
-		char    c = 'a';
-		int             d = 2147483647;
-		int             e = -2147483648;
-		int             f = 42;
-		int             g = 25;
-		int             h = 4200;
-		int             i = 8;
-		int             j = -12;
-		int             k = 123456789;
-		int             l = 0;
-		int             m = -12345678;
-		char    *n = "abcdefghijklmnop";
-		char    *o = "-a";
-		char    *p = "-12";
-		char    *q = "0";
-		char    *r = "%%";
-		char    *s = "-2147483648";
-		char    *t = "0x12345678";
-		char    *u = "-0";
-//	   printf("%1i, %1d, %1d, %1d, %1d, %1d, %1d, %1d\n\n", i, j, k, l, m, c, e, d);
-//	ft_printf("%*i, %*d, %*d, %*d, %*d, %*d, %*d, %*d\n", i, j, k, l, m, c, e, d);
-	printf("%*i, %*d, %*d, %*d, %*d, %*d, %*d, %*d\n", i, j, k, l, m, c, e, d);
-	return 0;
-}
+// int main(void)
+// {
+// 	 int             a = -4;
+// 		int             b = 6;
+// 		char    c = 'a';
+// 		int             d = 2147483647;
+// 		int             e = -2147483648;
+// 		int             f = 42;
+// 		int             g = 25;
+// 		int             h = 4200;
+// 		int             i = 8;
+// 		int             j = -12;
+// 		int             k = 123456789;
+// 		int             l = 0;
+// 		int             m = -12345678;
+// 		char    *n = "abcdefghijklmnop";
+// 		char    *o = "-a";
+// 		char    *p = "-12";
+// 		char    *q = "0";
+// 		char    *r = "%%";
+// 		char    *s = "-2147483648";
+// 		char    *t = "0x12345678";
+// 		char    *u = "-0";
+// //	   printf("%1i, %1d, %1d, %1d, %1d, %1d, %1d, %1d\n\n", i, j, k, l, m, c, e, d);
+// 	ft_printf("%.*s, %.*s, %.*s, %.*s, %.*s, %.*s, %.*s, %.*s\n", a, n, a, o, a, p, a, q, a, r, a, s, a, t, a, u);
+// 	printf("%.*s, %.*s, %.*s, %.*s, %.*s, %.*s, %.*s, %.*s", a, n, a, o, a, p, a, q, a, r, a, s, a, t, a, u);
+// 	return 0;
+// }
 
 char	*ft_perevod(va_list argptr, char specifier, int sistem_ch)
 {
@@ -130,6 +130,7 @@ char	*ft_width(char flag, int width, char *str)
 	//printf("%d\n", width);
 	sim = (flag == '.') ? ' ' : flag;
 	tmp = ft_strdup(" ");
+	sim = (width < 0) ? '-' : sim;  
 	width = (width < 0) ? width * -1 : width;
 //	printf("witt -- %s", str);
 	while (str[++i] != '\0' && width-- >= 0)
@@ -137,7 +138,7 @@ char	*ft_width(char flag, int width, char *str)
 	//	printf(">>>");
 		if (width == -1)
 		{
-			//printf("\n|=====================\n");
+		//	printf("\n|=====================\n");
 			return (str);
 		}
 	}
@@ -156,21 +157,31 @@ char	*ft_width(char flag, int width, char *str)
 	return (str);
 }
 
-char	*ft_accuracy(t_mod inf_mod, char *str, char *dup_str)
+char	*ft_accuracy(t_mod inf_mod, char *str, char *dup_str, int *minus)
 {
 	int		i;
 	int		accuracy;
 	char	flag;
 
-	accuracy = inf_mod.accuracy;
+	accuracy = (inf_mod.accuracy < 0) ? 0 : inf_mod.accuracy;
 	flag = inf_mod.flag;
-	i = ft_strlen(str);
+	if (inf_mod.accuracy < 0)
+		return (str);
+	else
+		i = ft_strlen(str);
+	if (*minus == ' ' && inf_mod.flag_for_accu == 0 && inf_mod.flag_for_width == 0 && inf_mod.accuracy < inf_mod.width &&
+	inf_mod.accuracy > (int)ft_strlen((const char*)dup_str))
+		*minus = '-';
 	free(str);
+//	printf("  dup_str - |%s|  ", dup_str);
 	if (flag != '-')
 	{
 		//printf("<><><>");
 		dup_str = ft_width('0', accuracy, dup_str);
+		if (inf_mod.specifier == 'd' || inf_mod.specifier == 'i')
+			dup_str = (*minus == '-') ? ft_strjoin(dup_str, "-", 1) : dup_str;
 		dup_str = (inf_mod.specifier == 'p') ? ft_strjoin(dup_str, "x0", 1) : dup_str;
+	//	printf("  dup_str - |%s|  ", dup_str);
 		dup_str = ft_width('.', i, dup_str);
 		return (dup_str);
 	}
@@ -237,6 +248,15 @@ char	*ft_obrabotchik_for_s(t_mod inf_mod, va_list argptr)
 
 	str = ft_strdup(va_arg(argptr, char*));
 	str = perevorot(str);
+	if (inf_mod.flag_for_width == 0 && inf_mod.width < 0)
+	{
+		inf_mod.flag = '-';
+		inf_mod.width *= -1;
+	}
+	if (inf_mod.flag_for_accu == 0 && inf_mod.accuracy < 0)
+	{
+		inf_mod.flag_for_accu = 1;
+	}
 //	printf("str - %s\n", str);
 	inf_mod.flag = (inf_mod.flag == '0') ? '.' : inf_mod.flag;
 	str = ft_accu_for_s(inf_mod, str);
@@ -254,9 +274,41 @@ int		ft_obrabotchik(t_mod inf_mod, va_list argptr)
 	if (inf_mod.specifier != 's')
 	{
 		str = new_str(inf_mod.specifier, argptr);
+		if (inf_mod.flag_for_accu == 0 && (inf_mod.specifier == 'd' || inf_mod.specifier == 'i')
+		&& inf_mod.accuracy > 0 && inf_mod.flag == '0' && ft_strchr((const char*)str, '-') &&((int)ft_strlen((const char*)str) - 1))
+			inf_mod.flag = '.';
+		if (ft_strchr((const char*)str, '-') && ((inf_mod.flag_for_accu == 0 && inf_mod.accuracy > 0 && inf_mod.accuracy > ((int)ft_strlen((const char*)str) - 1))
+		|| (inf_mod.flag == '0' && inf_mod.flag_for_width == 0)) &&
+		(inf_mod.specifier == 'd' || inf_mod.specifier == 'i'))
+		{
+			if (inf_mod.flag_for_width == 0 && inf_mod.width < 0)
+			{
+				//printf("\nwidt - %d    ", inf_mod.width);
+				inf_mod.width *= -1;
+				//printf("w - %d\n", inf_mod.width);
+				if ((inf_mod.flag == '0' && inf_mod.flag_for_width == 0) ||
+				(inf_mod.accuracy < ((int)ft_strlen((const char*)str)) && inf_mod.flag_for_width == 0) ||
+				(inf_mod.flag_for_accu == 0 && inf_mod.flag_for_width == 0 && inf_mod.accuracy > ((int)ft_strlen((const char*)str) - 1) &&
+				inf_mod.width > inf_mod.accuracy))
+					inf_mod.width = (inf_mod.width < 0) ? inf_mod.width + 1 : inf_mod.width - 1;
+				inf_mod.width *= -1;
+				//printf("w - %d\n", inf_mod.width);
+			}
+			else
+				if ((inf_mod.flag == '0' && inf_mod.flag_for_width == 0) ||
+				(inf_mod.accuracy < ((int)ft_strlen((const char*)str)) && inf_mod.flag_for_width == 0) ||
+				(inf_mod.flag_for_accu == 0 && inf_mod.flag_for_width == 0 && inf_mod.accuracy > ((int)ft_strlen((const char*)str) - 1) &&
+				inf_mod.width <= (inf_mod.accuracy + 1) && inf_mod.width > inf_mod.accuracy))
+					inf_mod.width = (inf_mod.width < 0) ? inf_mod.width + 1 : inf_mod.width - 1;
+		//	if (inf_mod.accuracy < 0 )
+				
+			str = ft_substr((const char*)str, 0, (ft_strlen(str) - 1));
+		//	printf("------\n");
+			inf_mod.minus = ' ';
+			number = '-';
+		}
 		if (inf_mod.accuracy == 0 && *str == '0')
 		{
-		//	printf("----------");
 			tmp = str;
 		 	str = ft_strdup("");
 			free(tmp);
@@ -265,6 +317,8 @@ int		ft_obrabotchik(t_mod inf_mod, va_list argptr)
 		dup_str = ft_strdup(str);
 		if (inf_mod.flag_for_width == 0 && inf_mod.specifier != 'c')
 		{
+			if (inf_mod.width < 0)
+				inf_mod.flag = '-';
 			if (inf_mod.specifier == 'p' && inf_mod.flag_for_accu == 1)
 			{
 				inf_mod.width -= 2;
@@ -276,18 +330,24 @@ int		ft_obrabotchik(t_mod inf_mod, va_list argptr)
 		}
 		else if (inf_mod.flag_for_width == 0)
 			str = ft_width('.', inf_mod.width, str);
+	//	printf("\nstr - |%s|", str);
 		if (inf_mod.flag_for_accu != 1 && inf_mod.specifier != 'c')
 		{
-			str = ft_accuracy(inf_mod, str, dup_str);
+			// if (inf_mod.accuracy < 0)
+			// 	inf_mod.flag = '-';
+			str = ft_accuracy(inf_mod, str, dup_str, &inf_mod.minus);
 			//printf("\nstr -- %s\n", str);
 		}
+	//	printf(" str posle accu - |%s|\n", str);
+		if (inf_mod.minus == ' ')
+			str = (number == '-') ? ft_strjoin(str, "-", 1) : str;
 		str = perevorot(str);
 	//	printf("value - |%s|\n", str);
 	}
 	else
 		str = ft_obrabotchik_for_s(inf_mod, argptr);
+		
 //	printf("|_%s_|\n", str);
-	
 	ft_putstr_fd(str, 1);
 	number = ft_strlen(str);
 //	free(str);
@@ -307,23 +367,26 @@ int		zapolnenie_srtuct(const char *format, va_list argptr, int *i)
 	{
 		inf_mod.flag = (format[(*i)++]);
 	}
-//	printf("format - |%c|", format[*i]);
+//	printf("format - |%c|\n", format[*i]);
 	if ((inf_mod.flag_for_width = 1) && (format[*i] == '*' || ft_isdigit(format[*i])))
 	{
 		if (ft_isdigit(format[*i]))
 		{
 			inf_mod.width = ft_atoi((char*)format + *i);
+			while (ft_isdigit(format[*i]))
+				++(*i);
 		}
 		else
 		{		
 			inf_mod.width = va_arg(argptr, int);
+			++(*i);
 		}
 		inf_mod.flag_for_width = 0;
-		++(*i);
 	}
+	//printf("format - |%c|", format[*i]);
 	if ((inf_mod.flag_for_accu = 1) && format[*i] == '.' && ++(*i))
 	{
-		printf(">>>>");
+	//	printf(">>>>");
 		if (ft_isdigit(format[*i]))
 		{
 			inf_mod.accuracy = ft_atoi((char*)format + *i);
@@ -333,8 +396,10 @@ int		zapolnenie_srtuct(const char *format, va_list argptr, int *i)
 		}
 		else if (format[*i] == '*')
 		{
+	//		printf("\n***format - |%c|", format[*i]);
 			++(*i);
 			inf_mod.accuracy = va_arg(argptr, int);
+	//		printf("  accu - %d\n", inf_mod.accuracy);
 			inf_mod.flag_for_accu = 0;
 		}
 		else
@@ -344,8 +409,12 @@ int		zapolnenie_srtuct(const char *format, va_list argptr, int *i)
 		}
 	}
 	inf_mod.specifier = format[*i];
+
+	if (inf_mod.flag_for_accu == 0 && (inf_mod.specifier == 'd' || inf_mod.specifier == 'i') && inf_mod.accuracy == 0 && inf_mod.flag == '0')
+		inf_mod.flag = '.';
 	++(*i);
-//	printf("w - |%d|, flag - |%c|, for_w - |%d|, for_a - |%d|, sp - |%c|\n", inf_mod.width, inf_mod.flag, inf_mod.flag_for_width, inf_mod.flag_for_accu, inf_mod.specifier);
+//	printf("\nw - |%d|, a - |%d|, flag - |%c|, for_w - |%d|, for_a - |%d|, sp - |%c|\n", inf_mod.width, inf_mod.accuracy, inf_mod.flag, inf_mod.flag_for_width, inf_mod.flag_for_accu, inf_mod.specifier);
+	inf_mod.minus = '_';
 	count = ft_obrabotchik(inf_mod, argptr);
 //	printf("\nCOUNT - %d", count);
 	return (count);
