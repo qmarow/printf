@@ -9,8 +9,8 @@ int		ft_printf(const char*, ...);
 
 // int main(void)
 // {
-// 	 int             a = -4;
-// 		int             b = 6;
+// 	 int             a = 8;
+// 		int             b = 0;
 // 		char    c = 'a';
 // 		int             d = 2147483647;
 // 		int             e = -2147483648;
@@ -31,8 +31,8 @@ int		ft_printf(const char*, ...);
 // 		char    *t = "0x12345678";
 // 		char    *u = "-0";
 // //	   printf("%1i, %1d, %1d, %1d, %1d, %1d, %1d, %1d\n\n", i, j, k, l, m, c, e, d);
-// 	ft_printf("%.*s, %.*s, %.*s, %.*s, %.*s, %.*s, %.*s, %.*s\n", a, n, a, o, a, p, a, q, a, r, a, s, a, t, a, u);
-// 	printf("%.*s, %.*s, %.*s, %.*s, %.*s, %.*s, %.*s, %.*s", a, n, a, o, a, p, a, q, a, r, a, s, a, t, a, u);
+// 	ft_printf("%*p, %*x, %*p, %*x, %*p, %*x, %*p, %*x\n", a, (void *)209590960, a, 209590960, a, (void *)207038912, a, 207038912, a, (void *)1, a, 1, a, NULL, a, 0);
+// 	printf("%*p, %*x, %*p, %*x, %*p, %*x, %*p, %*x", a, (void *)209590960, a, 209590960, a, (void *)207038912, a, 207038912, a, (void *)1, a, 1, a, NULL, a, 0);
 // 	return 0;
 // }
 
@@ -45,12 +45,14 @@ char	*ft_perevod(va_list argptr, char specifier, int sistem_ch)
 	int						i;
 
 	number = va_arg(argptr, long long unsigned int);
+	if (specifier != 'p' && number == 0)
+		return (ft_strdup("0"));
 	str = ft_strdup("");
 	i = 8;
 	sixteen = (specifier == 'X') ? ft_strdup("0123456789ABCDEF")
 	: ft_strdup("0123456789abcdef");
 	//printf("number %llu\n", number);
-	tmp = ft_strdup("");
+	tmp = ft_strdup(" ");
 	while (number && i--)
 	{
 		//printf("((%d))\n", number % sistem_ch);
@@ -274,6 +276,21 @@ int		ft_obrabotchik(t_mod inf_mod, va_list argptr)
 	if (inf_mod.specifier != 's')
 	{
 		str = new_str(inf_mod.specifier, argptr);
+		if (inf_mod.specifier == 'p' && inf_mod.flag_for_accu == 1 && inf_mod.flag_for_width == 1 &&
+		ft_strlen((const char*)str))
+			str = ft_strjoin(str, "x0", 1);
+		else if (inf_mod.specifier == 'p' && inf_mod.flag_for_width == 0 && inf_mod.flag == '.' && (ft_strlen((const char*)str)))
+		{
+			inf_mod.specifier = 'x';
+			str = ft_strjoin(str, "x0", 1);
+		}
+		if (inf_mod.specifier == 'p' && !(ft_strlen((const char*)str)))
+		{
+			inf_mod.specifier = 'x';
+			str = ft_strdup(")lin(");
+		}
+
+	//	printf("str - |%s|\n", str);
 		if (inf_mod.flag_for_accu == 0 && (inf_mod.specifier == 'd' || inf_mod.specifier == 'i')
 		&& inf_mod.accuracy > 0 && inf_mod.flag == '0' && ft_strchr((const char*)str, '-') &&((int)ft_strlen((const char*)str) - 1))
 			inf_mod.flag = '.';
@@ -307,14 +324,17 @@ int		ft_obrabotchik(t_mod inf_mod, va_list argptr)
 			inf_mod.minus = ' ';
 			number = '-';
 		}
-		if (inf_mod.accuracy == 0 && *str == '0')
+	//	printf("str - |%s|\n", str);
+	//	printf("str - |%s|\n", dup_str);
+		if (inf_mod.accuracy == 0 && ft_strlen((const char*)str) == 1 &&*str == '0')
 		{
 			tmp = str;
 		 	str = ft_strdup("");
 			free(tmp);
 		}
-		
+	//	printf("str - |%s|\n", dup_str);
 		dup_str = ft_strdup(str);
+		//printf("str - |%s|\n", dup_str);
 		if (inf_mod.flag_for_width == 0 && inf_mod.specifier != 'c')
 		{
 			if (inf_mod.width < 0)
