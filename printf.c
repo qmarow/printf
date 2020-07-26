@@ -31,8 +31,8 @@ int		ft_printf(const char*, ...);
 // 		char    *t = "0x12345678";
 // 		char    *u = "-0";
 // //	   printf("%1i, %1d, %1d, %1d, %1d, %1d, %1d, %1d\n\n", i, j, k, l, m, c, e, d);
-// 	ft_printf("%-2s, %.s, %-4s, %-2.4s, %-8.12s, %3s, %8s, %---2s, %.*s, %.0s, %.1s, %.2s, %.4s, %.8s", NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, -2, NULL, NULL, NULL, NULL, NULL, NULL);
-//        printf("%-2s, %.s, %-4s, %-2.4s, %-8.12s, %3s, %8s, %---2s, %.*s, %.0s, %.1s, %.2s, %.4s, %.8s", NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, -2, NULL, NULL, NULL, NULL, NULL, NULL);
+// 	ft_printf("%-0d\n", 0);
+// 	printf("%-0d\n", 0);	
 // 	return 0;
 // }
 
@@ -302,14 +302,14 @@ int		ft_obrabotchik(t_mod inf_mod, va_list argptr)
 			inf_mod.specifier = 'x';
 			str = ft_strdup(")lin(");
 		}
-	//	printf("str - |%s|\n", str);
+	//	printf("_ 1 str - |%s|\n", str);
 		if (inf_mod.specifier == 'c' && inf_mod.flag_for_width == 0 && !(ft_strlen((const char*)str))
 		&& inf_mod.width != 0)
 		{
 			//printf(">>>>>>>>");
 			inf_mod.width = (inf_mod.width < 0) ? inf_mod.width + 1 : inf_mod.width - 1;
 		}
-	//	printf("str - |%s|\n", str);
+	//	printf("_ 2 str - |%s|\n", str);
 		if (inf_mod.flag_for_accu == 0 && (inf_mod.specifier == 'd' || inf_mod.specifier == 'i')
 		&& inf_mod.accuracy > 0 && inf_mod.flag == '0' && ft_strchr((const char*)str, '-') &&((int)ft_strlen((const char*)str) - 1))
 			inf_mod.flag = '.';
@@ -343,15 +343,16 @@ int		ft_obrabotchik(t_mod inf_mod, va_list argptr)
 			inf_mod.minus = ' ';
 			number = '-';
 		}
-	//	printf("str - |%s|\n", str);
-	//	printf("str - |%s|\n", dup_str);
-		if (inf_mod.accuracy == 0 && ft_strlen((const char*)str) == 1 && *str == '0')
+	//	printf("_ 3 str - |%s|\n", str);
+		// printf("str - |%s|\n", dup_str);
+		if (inf_mod.flag_for_accu != 1 && inf_mod.accuracy == 0 && ft_strlen((const char*)str) == 1 && *str == '0')
 		{
+		//	printf(">>>>>");
 			tmp = str;
 		 	str = ft_strdup("");
 			free(tmp);
 		}
-	//	printf("str - |%s|\n", dup_str);
+		// printf("str - |%s|\n", dup_str);
 		dup_str = ft_strdup(str);
 		//printf("str - |%s|\n", dup_str);
 		if (inf_mod.flag_for_width == 0)
@@ -367,6 +368,7 @@ int		ft_obrabotchik(t_mod inf_mod, va_list argptr)
 			else 
 				str = ft_width(inf_mod.flag, inf_mod.width, str);
 		}
+	//	printf("_ 4 str - |%s|\n", str);
 		//else if (inf_mod.flag_for_width == 0)
 		//	str = ft_width('.', inf_mod.width, str);
 	//	printf("\nstr - |%s|", str);
