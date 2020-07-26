@@ -9,8 +9,8 @@ int		ft_printf(const char*, ...);
 
 // int main(void)
 // {
-// 	 int             a = 8;
-// 		int             b = 0;
+// 	 int             a = 12;
+// 		int             b = 18;
 // 		char    c = 'a';
 // 		int             d = 2147483647;
 // 		int             e = -2147483648;
@@ -31,8 +31,8 @@ int		ft_printf(const char*, ...);
 // 		char    *t = "0x12345678";
 // 		char    *u = "-0";
 // //	   printf("%1i, %1d, %1d, %1d, %1d, %1d, %1d, %1d\n\n", i, j, k, l, m, c, e, d);
-// 	ft_printf("%*p, %*x, %*p, %*x, %*p, %*x, %*p, %*x\n", a, (void *)209590960, a, 209590960, a, (void *)207038912, a, 207038912, a, (void *)1, a, 1, a, NULL, a, 0);
-// 	printf("%*p, %*x, %*p, %*x, %*p, %*x, %*p, %*x", a, (void *)209590960, a, 209590960, a, (void *)207038912, a, 207038912, a, (void *)1, a, 1, a, NULL, a, 0);
+// 	ft_printf("%-2s, %.s, %-4s, %-2.4s, %-8.12s, %3s, %8s, %---2s, %.*s, %.0s, %.1s, %.2s, %.4s, %.8s", NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, -2, NULL, NULL, NULL, NULL, NULL, NULL);
+//        printf("%-2s, %.s, %-4s, %-2.4s, %-8.12s, %3s, %8s, %---2s, %.*s, %.0s, %.1s, %.2s, %.4s, %.8s", NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, -2, NULL, NULL, NULL, NULL, NULL, NULL);
 // 	return 0;
 // }
 
@@ -190,6 +190,8 @@ char	*ft_accuracy(t_mod inf_mod, char *str, char *dup_str, int *minus)
 	else
 	{
 		dup_str = ft_width('0', accuracy, dup_str);
+		if (inf_mod.specifier == 'd' || inf_mod.specifier == 'i')
+			dup_str = (*minus == '-') ? ft_strjoin(dup_str, "-", 1) : dup_str;
 		dup_str = (inf_mod.specifier == 'p') ? ft_strjoin(dup_str, "x0", 1) : dup_str;
 		dup_str = ft_width('-', i, dup_str);
 		return (dup_str);
@@ -248,21 +250,32 @@ char	*ft_obrabotchik_for_s(t_mod inf_mod, va_list argptr)
 {
 	char	*str;
 
-	str = ft_strdup(va_arg(argptr, char*));
+	str = va_arg(argptr, char*);
+	if (inf_mod.flag_for_accu == 0 && inf_mod.accuracy < 0)
+	{
+		inf_mod.flag_for_accu = 1;
+	}
+	if (!str)
+	{
+	//	if (inf_mod.flag_for_accu == 2)
+		if (inf_mod.flag_for_accu == 0 && inf_mod.accuracy < 6)
+			str  = ft_strdup("");
+		else
+			str = ft_strdup("(null)");
+	}
+	else 
+		str = ft_strdup(str);
 	str = perevorot(str);
 	if (inf_mod.flag_for_width == 0 && inf_mod.width < 0)
 	{
 		inf_mod.flag = '-';
 		inf_mod.width *= -1;
 	}
-	if (inf_mod.flag_for_accu == 0 && inf_mod.accuracy < 0)
-	{
-		inf_mod.flag_for_accu = 1;
-	}
 //	printf("str - %s\n", str);
 	inf_mod.flag = (inf_mod.flag == '0') ? '.' : inf_mod.flag;
 	str = ft_accu_for_s(inf_mod, str);
 	return (str);
+
 }
 
 int		ft_obrabotchik(t_mod inf_mod, va_list argptr)
@@ -289,7 +302,13 @@ int		ft_obrabotchik(t_mod inf_mod, va_list argptr)
 			inf_mod.specifier = 'x';
 			str = ft_strdup(")lin(");
 		}
-
+	//	printf("str - |%s|\n", str);
+		if (inf_mod.specifier == 'c' && inf_mod.flag_for_width == 0 && !(ft_strlen((const char*)str))
+		&& inf_mod.width != 0)
+		{
+			//printf(">>>>>>>>");
+			inf_mod.width = (inf_mod.width < 0) ? inf_mod.width + 1 : inf_mod.width - 1;
+		}
 	//	printf("str - |%s|\n", str);
 		if (inf_mod.flag_for_accu == 0 && (inf_mod.specifier == 'd' || inf_mod.specifier == 'i')
 		&& inf_mod.accuracy > 0 && inf_mod.flag == '0' && ft_strchr((const char*)str, '-') &&((int)ft_strlen((const char*)str) - 1))
@@ -326,7 +345,7 @@ int		ft_obrabotchik(t_mod inf_mod, va_list argptr)
 		}
 	//	printf("str - |%s|\n", str);
 	//	printf("str - |%s|\n", dup_str);
-		if (inf_mod.accuracy == 0 && ft_strlen((const char*)str) == 1 &&*str == '0')
+		if (inf_mod.accuracy == 0 && ft_strlen((const char*)str) == 1 && *str == '0')
 		{
 			tmp = str;
 		 	str = ft_strdup("");
@@ -335,7 +354,7 @@ int		ft_obrabotchik(t_mod inf_mod, va_list argptr)
 	//	printf("str - |%s|\n", dup_str);
 		dup_str = ft_strdup(str);
 		//printf("str - |%s|\n", dup_str);
-		if (inf_mod.flag_for_width == 0 && inf_mod.specifier != 'c')
+		if (inf_mod.flag_for_width == 0)
 		{
 			if (inf_mod.width < 0)
 				inf_mod.flag = '-';
@@ -348,8 +367,8 @@ int		ft_obrabotchik(t_mod inf_mod, va_list argptr)
 			else 
 				str = ft_width(inf_mod.flag, inf_mod.width, str);
 		}
-		else if (inf_mod.flag_for_width == 0)
-			str = ft_width('.', inf_mod.width, str);
+		//else if (inf_mod.flag_for_width == 0)
+		//	str = ft_width('.', inf_mod.width, str);
 	//	printf("\nstr - |%s|", str);
 		if (inf_mod.flag_for_accu != 1 && inf_mod.specifier != 'c')
 		{
@@ -378,12 +397,16 @@ int		zapolnenie_srtuct(const char *format, va_list argptr, int *i)
 {
 	t_mod	inf_mod;
 	int		count;
-	int		a;
 
-	a = -1;
 	inf_mod.flag = '.';
 	++(*i);
-	while (++a < 2 && (format[(*i)] == '-' || format[*i] == '0'))
+	if (format[*i] == '%')
+	{
+		++(*i);
+		ft_putchar_fd('%', 1);
+		return (1);
+	}
+	while ((format[(*i)] == '-' || format[*i] == '0'))
 	{
 		inf_mod.flag = (format[(*i)++]);
 	}

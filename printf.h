@@ -1,5 +1,5 @@
 #ifndef PRINTF_H
-# define PRINT_H
+# define PRINTF_H
 
 # include <unistd.h>
 # include <stdlib.h>
