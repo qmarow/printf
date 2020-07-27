@@ -2,6 +2,7 @@
 # define PRINTF_H
 
 # include <unistd.h>
+#include <stdarg.h>
 # include <stdlib.h>
 
 typedef struct		s_mod
@@ -27,5 +28,8 @@ char		*ft_strnstr(const char *s1, const char *s2, size_t len);
 int			ft_printf(const char *format, ...);
 char		*ft_substr(char const *s, unsigned int start, size_t len);
 char		*ft_strchr(const char *str, int ch);
+int		 	parce(const char *format, va_list argptr, int *i);
+int			ft_obrabotchik(t_mod inf_mod, va_list argptr);
+//int			ft_handler(t_mod inf_mod, va_list argptr);
 
 #endif

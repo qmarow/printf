@@ -7,7 +7,7 @@ SRCS =  printf.c \
 				ft_putstr_fd.c ft_strdup.c \
 				ft_strjoin.c ft_strlen.c \
 				ft_strnstr.c ft_substr.c \
-				ft_strchr.c \
+				ft_strchr.c parce.c \
 
 OBJS = $(SRCS:%.c=%.o)
 
