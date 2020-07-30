@@ -14,7 +14,7 @@ SRCS =  printf.c \
 OBJS = $(SRCS:%.c=%.o)
 
 %.o : %.c $(HEAD)
-		gcc -c $< -o $@
+		gcc -Wall -Wextra -Werror -c $< -o $@
 
 all: $(OBJS)
 		ar rcs $(NAME) $(OBJS)
