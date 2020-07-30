@@ -8,11 +8,13 @@ SRCS =  printf.c \
 				ft_strjoin.c ft_strlen.c \
 				ft_strnstr.c ft_substr.c \
 				ft_strchr.c parce.c \
+				ft_handler.c ft_utils.c \
+				ft_handler_w_ac.c \
 
 OBJS = $(SRCS:%.c=%.o)
 
 %.o : %.c $(HEAD)
-		gcc -Wall -Wextra -Werror -c $< -o $@
+		gcc -c $< -o $@
 
 all: $(OBJS)
 		ar rcs $(NAME) $(OBJS)

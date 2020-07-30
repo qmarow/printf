@@ -3,16 +3,16 @@
 /*                                                        :::      ::::::::   */
 /*   ft_strlen.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: qmarowak <qmarowak@student.21-school.ru>   +#+  +:+       +#+        */
+/*   By: utoomey <utoomey@student.21-school.ru>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/05/19 10:06:49 by qmarowak          #+#    #+#             */
-/*   Updated: 2020/05/19 10:06:50 by qmarowak         ###   ########.fr       */
+/*   Updated: 2020/07/28 21:47:22 by utoomey          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "printf.h"
 
-size_t	ft_strlen(const char *s)
+size_t	ft_strlen(char *s)
 {
 	size_t i;
 

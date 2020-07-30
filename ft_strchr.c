@@ -3,16 +3,16 @@
 /*                                                        :::      ::::::::   */
 /*   ft_strchr.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: qmarowak <qmarowak@student.21-school.ru>   +#+  +:+       +#+        */
+/*   By: utoomey <utoomey@student.21-school.ru>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/05/19 10:06:17 by qmarowak          #+#    #+#             */
-/*   Updated: 2020/05/19 16:53:40 by qmarowak         ###   ########.fr       */
+/*   Updated: 2020/07/29 11:54:53 by utoomey          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "printf.h"
 
-char	*ft_strchr(const char *str, int ch)
+char	*ft_strchr(char *str, int ch)
 {
 	int i;
 
