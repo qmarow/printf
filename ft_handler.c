@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ft_handler.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: qmarowak <qmarowak@student.21-school.ru>   +#+  +:+       +#+        */
+/*   By: utoomey <utoomey@student.21-school.ru>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/07/30 09:34:08 by qmarowak          #+#    #+#             */
-/*   Updated: 2020/07/30 09:34:09 by qmarowak         ###   ########.fr       */
+/*   Updated: 2020/07/30 10:18:32 by utoomey          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -116,7 +116,7 @@ int		ft_handler(t_mod inf_mod, va_list argptr)
 	if (inf_mod.flag != '-' && (f = 1))
 		ft_putstr_fd(str, 1);
 	number = ft_strlen(str);
-	if ((flag < 30 || flag > 127) && (number += 1))
+	if ((flag < 32 || flag > 127) && (number += 1))
 		ft_putchar_fd(flag, 1);
 	if (!f)
 		ft_putstr_fd(str, 1);

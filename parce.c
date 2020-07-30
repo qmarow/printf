@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parce.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: qmarowak <qmarowak@student.21-school.ru>   +#+  +:+       +#+        */
+/*   By: utoomey <utoomey@student.21-school.ru>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/07/30 09:36:11 by qmarowak          #+#    #+#             */
-/*   Updated: 2020/07/30 09:36:13 by qmarowak         ###   ########.fr       */
+/*   Updated: 2020/07/30 10:40:17 by utoomey          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,16 +33,22 @@ t_mod	get_width(const char *format, t_mod inf_mod, int *i, va_list argptr)
 
 t_mod	get_accuracy(const char *format, t_mod inf_mod, int *i, va_list argptr)
 {
+	int		f;
+
+	f = 0;
+	if (format[*i] == '-' && ++(*i))
+		f = 1;
 	if (ft_isdigit(format[*i]))
 	{
 		inf_mod.ac = ft_atoi((char*)format + *i);
 		while (ft_isdigit(format[*i]))
 			++(*i);
 		inf_mod.f_f_ac = 0;
+		if (f && inf_mod.f_f_w == 0)
+			inf_mod.w = (inf_mod.w < 0) ? +inf_mod.ac : -inf_mod.ac;
 	}
-	else if (format[*i] == '*')
+	else if (!f && format[*i] == '*' && ++(*i))
 	{
-		++(*i);
 		inf_mod.ac = va_arg(argptr, int);
 		inf_mod.f_f_ac = 0;
 	}
@@ -77,8 +83,6 @@ int		process_zero(int *i, const char *format, t_mod inf_mod)
 		inf_mod.f_f_ac = 1;
 	if (inf_mod.f_f_ac == 0 && inf_mod.ac == 0)
 		inf_mod.f_f_ac = 1;
-	if (inf_mod.f_f_w == 0)
-		inf_mod.f_f_w = 1;
 	str = ft_substr(format, *i, 1);
 	tmp = str;
 	str = ft_obrabotchik_for_s(inf_mod, str, 1);

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   printf.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: qmarowak <qmarowak@student.21-school.ru>   +#+  +:+       +#+        */
+/*   By: utoomey <utoomey@student.21-school.ru>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/07/30 09:36:27 by qmarowak          #+#    #+#             */
-/*   Updated: 2020/07/30 09:36:29 by qmarowak         ###   ########.fr       */
+/*   Updated: 2020/07/30 10:18:53 by utoomey          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,7 +27,7 @@ char	*new_str(t_mod inf_mod, va_list argptr, int *flag)
 		return (ft_perevod(argptr, inf_mod, 16));
 	}
 	*flag = va_arg(argptr, int);
-	str = (*flag < 30) ? ft_strdup("")
+	str = (*flag < 32 || *flag > 127) ? ft_strdup("")
 	: ft_memset(ft_strdup(" "), *flag, 1);
 	return (str);
 }
